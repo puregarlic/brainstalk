@@ -1,6 +1,3 @@
 {
-  "imports": {
-    "std/": "https://deno.land/std@0.174.0/",
-    "@upstash/redis": "https://deno.land/x/upstash_redis@v1.14.0/mod.ts"
-  }
+  "importMap": "import_map.json"
 }

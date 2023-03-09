@@ -48,4 +48,4 @@ jobs:
         with:
           project: brainstalk
           entrypoint: main.ts
-          importMap: import_map.json
+          import-map: import_map.json

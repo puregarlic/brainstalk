@@ -2,7 +2,9 @@
 
 This is a [Deno](https://deno.land/) project.
 
-[Configuration](https://codesandbox.io/docs/projects/learn/setting-up/tasks) has been added to optimize it for [CodeSandbox Projects](https://codesandbox.io/p/dashboard).
+[Configuration](https://codesandbox.io/docs/projects/learn/setting-up/tasks) has
+been added to optimize it for
+[CodeSandbox Projects](https://codesandbox.io/p/dashboard).
 
 [Open in CodeSandbox](https://codesandbox.io/p/github/codesandbox/codesandbox-template-deno-server)
 
@@ -13,4 +15,5 @@ This is a [Deno](https://deno.land/) project.
 
 ## Deno Types
 
-We don't have type integration with Deno yet, but you can open this branch in VSCode and install the Deno VSCode extension!
+We don't have type integration with Deno yet, but you can open this branch in
+VSCode and install the Deno VSCode extension!

@@ -1,7 +1,7 @@
 import { Server } from "std/http/server.ts";
-import { Redis } from "@upstash/redis"
+import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv()
+const redis = Redis.fromEnv();
 
 const port = 8080;
 const handler = (_request: Request) => {

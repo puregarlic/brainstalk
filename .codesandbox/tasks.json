@@ -2,7 +2,7 @@
   "tasks": {
     "docker": {
       "name": "Run container",
-      "command": "deno run --allow-net index.ts",
+      "command": "deno run --watch --allow-net --allow-env index.ts",
       "runAtStart": true
     }
   }

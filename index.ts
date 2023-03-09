@@ -1,4 +1,7 @@
-import { Server } from "https://deno.land/std@0.140.0/http/server.ts";
+import { Server } from "std/http/server.ts";
+import { Redis } from "@upstash/redis"
+
+const redis = Redis.fromEnv()
 
 const port = 8080;
 const handler = (_request: Request) => {

@@ -47,5 +47,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: brainstalk
-          entrypoint: index.ts
+          entrypoint: main.ts
           importMap: import_map.json

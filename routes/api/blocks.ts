@@ -1,7 +1,12 @@
 import { Handlers } from "$fresh/server.ts";
 import { Redis } from "@upstash/redis";
+import { z } from "zod";
 
 const redis = Redis.fromEnv();
+
+const postSchema = z.object({
+  block: z.string(),
+});
 
 export const handler: Handlers = {
   async GET(_req: Request) {
@@ -24,35 +29,27 @@ export const handler: Handlers = {
     );
   },
   async POST(req: Request) {
-    let block: unknown;
-
     try {
       const body = await req.json();
-      block = body?.block;
-    } catch (e) {
-      console.error(e);
-      return new Response(
-        JSON.stringify({ error: "Failed to parse body as JSON" }),
-        { status: 400 },
-      );
+      const block = postSchema.parse(body).block;
+
+      try {
+        await redis.set(crypto.randomUUID(), block);
+      } catch (error) {
+        console.error(error);
+        return new Response("Failed to save block", {
+          status: 500,
+        });
+      }
+
+      return new Response(null, {
+        status: 204,
+      });
+    } catch (error) {
+      console.error(error);
+      return new Response(error.message, {
+        status: 400,
+      });
     }
-
-    if (!block) {
-      return new Response(
-        JSON.stringify({ error: "Body must contain `block` key" }),
-        { status: 400 },
-      );
-    } else if (typeof block !== "string") {
-      return new Response(
-        JSON.stringify({ error: "`block` must be a string" }),
-        { status: 400 },
-      );
-    }
-
-    await redis.set(crypto.randomUUID(), block);
-
-    return new Response(null, {
-      status: 204,
-    });
   },
 };

@@ -1,6 +1,9 @@
 # Brainstalk
 
-Brainstalk is a self-hosted ingestion system for your knowledgebase. It's built using [Fresh](fresh-docs) and designed to be hosted on [Deno Deploy](deno-deploy) and backed by an [Upstash Redis](upstash-redis) instance.
+Brainstalk is a self-hosted ingestion system for your knowledgebase. It's built
+using [Fresh](fresh-docs) and designed to be hosted on
+[Deno Deploy](deno-deploy) and backed by an [Upstash Redis](upstash-redis)
+instance.
 
 ## Features
 
@@ -26,7 +29,8 @@ _All environment variables listed below are required._
 
 ### Authentication
 
-When connecting to the API, you'll use HTTP Basic Authentication using these values, so make sure you generate them securely and store them somewhere safe.
+When connecting to the API, you'll use HTTP Basic Authentication using these
+values, so make sure you generate them securely and store them somewhere safe.
 
 - `BRAINSTALK_USERNAME`
 - `BRAINSTALK_PASSWORD`

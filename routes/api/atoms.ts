@@ -19,27 +19,17 @@ type Atom = {
 export const handler: Handlers = {
   async GET(_req: Request) {
     const keys = await redis.keys("");
-
-    if (!keys.length) {
-      return new Response(
-        JSON.stringify([]),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-    }
-
-    const vals = await redis.mget<string[]>(...keys);
-
     const out: Atom[] = [];
-    for (let i = 0; i < keys.length; i++) {
-      out.push({ id: keys[i], text: vals[i] });
+
+    if (keys.length) {
+      const vals = await redis.mget<string[]>(...keys);
+      for (let i = 0; i < keys.length; i++) {
+        out.push({ id: keys[i], text: vals[i] });
+      }
     }
 
     return new Response(
-      JSON.stringify(out.entries()),
+      JSON.stringify(out),
       {
         headers: {
           "Content-Type": "application/json",

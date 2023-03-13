@@ -5,26 +5,42 @@ import { z } from "zod";
 const redis = Redis.fromEnv();
 
 const postSchema = z.object({
-  block: z.string(),
+  text: z.string(),
 });
 const deleteSchema = z.object({
-  blocks: z.array(z.string()),
+  ids: z.array(z.string()),
 });
+
+type Atom = {
+  id: string;
+  text: string;
+};
 
 export const handler: Handlers = {
   async GET(_req: Request) {
     const keys = await redis.keys("");
+
+    if (!keys.length) {
+      return new Response(
+        JSON.stringify([]),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+    }
+
     const vals = await redis.mget<string[]>(...keys);
 
-    const out = new Map<string, string>();
+    const out: Atom[] = [];
     for (let i = 0; i < keys.length; i++) {
-      out.set(keys[i], vals[i]);
+      out.push({ id: keys[i], text: vals[i] });
     }
 
     return new Response(
-      JSON.stringify(Object.fromEntries(out.entries())),
+      JSON.stringify(out.entries()),
       {
-        status: 200,
         headers: {
           "Content-Type": "application/json",
         },
@@ -34,18 +50,18 @@ export const handler: Handlers = {
   async POST(req: Request) {
     try {
       const body = await req.json();
-      const block = postSchema.parse(body).block;
+      const text = postSchema.parse(body).text;
 
       try {
         const id = crypto.randomUUID();
-        await redis.set(id, block);
+        await redis.set(id, text);
 
         if (typeof BroadcastChannel !== "undefined") {
           new BroadcastChannel("messages").postMessage({
             type: "NEW",
-            block: {
+            atom: {
               id,
-              text: block,
+              text,
             },
           });
         }
@@ -65,10 +81,12 @@ export const handler: Handlers = {
   async DELETE(req: Request) {
     try {
       const body = await req.json();
-      const blocks = deleteSchema.parse(body).blocks;
+      const ids = deleteSchema.parse(body).ids;
+
+      if (!ids.length) return new Response(null, { status: 204 });
 
       try {
-        await redis.del(...blocks);
+        await redis.del(...ids);
       } catch (error) {
         console.error(error);
         return new Response("Failed to delete blocks", {

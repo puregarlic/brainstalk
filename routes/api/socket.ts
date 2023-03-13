@@ -13,7 +13,7 @@ type ServerEvent = {
   event: ClientEvent;
 } | {
   type: "NEW";
-  block: {
+  atom: {
     id: string;
     text: string;
   };
@@ -43,10 +43,10 @@ export const handler: Handler = (req) => {
 
     switch (e.data.type) {
       case "POST":
-        // Save new block
+        // Save new atom
         break;
       case "DELETE":
-        // Delete the specified block(s)
+        // Delete the specified atom(s)
         break;
     }
 

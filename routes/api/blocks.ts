@@ -24,7 +24,7 @@ export const handler: Handlers = {
     return new Response(
       JSON.stringify(Object.fromEntries(out.entries())),
       {
-        status: 200,  
+        status: 200,
         headers: {
           "Content-Type": "application/json",
         },
@@ -37,7 +37,18 @@ export const handler: Handlers = {
       const block = postSchema.parse(body).block;
 
       try {
-        await redis.set(crypto.randomUUID(), block);
+        const id = crypto.randomUUID();
+        await redis.set(id, block);
+
+        if (typeof BroadcastChannel !== "undefined") {
+          new BroadcastChannel("messages").postMessage({
+            type: "NEW",
+            block: {
+              id,
+              text: block,
+            },
+          });
+        }
       } catch (error) {
         console.error(error);
         return new Response("Failed to save block", {

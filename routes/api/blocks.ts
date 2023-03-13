@@ -7,6 +7,9 @@ const redis = Redis.fromEnv();
 const postSchema = z.object({
   block: z.string(),
 });
+const deleteSchema = z.object({
+  blocks: z.array(z.string()),
+});
 
 export const handler: Handlers = {
   async GET(_req: Request) {
@@ -21,7 +24,7 @@ export const handler: Handlers = {
     return new Response(
       JSON.stringify(Object.fromEntries(out.entries())),
       {
-        status: 200,
+        status: 200,  
         headers: {
           "Content-Type": "application/json",
         },
@@ -42,14 +45,30 @@ export const handler: Handlers = {
         });
       }
 
-      return new Response(null, {
-        status: 204,
-      });
+      return new Response(null, { status: 204 });
     } catch (error) {
       console.error(error);
-      return new Response(error.message, {
-        status: 400,
-      });
+      return new Response(error.message, { status: 400 });
+    }
+  },
+  async DELETE(req: Request) {
+    try {
+      const body = await req.json();
+      const blocks = deleteSchema.parse(body).blocks;
+
+      try {
+        await redis.del(...blocks);
+      } catch (error) {
+        console.error(error);
+        return new Response("Failed to delete blocks", {
+          status: 500,
+        });
+      }
+
+      return new Response(null, { status: 204 });
+    } catch (error) {
+      console.error(error);
+      return new Response(error.message, { status: 400 });
     }
   },
 };
